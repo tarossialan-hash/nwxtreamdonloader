@@ -1,0 +1,28 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             x:Class="NWXtreamDownloader.UI.Views.NewContentView"
+             x:DataType="vm:NewContentViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" Margin="16,14">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+            <TextBlock Text="Novos Conteúdos" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <Button Grid.Column="1" Content="Copiar" Classes="accent" Click="OnCopy" Margin="0,0,6,0" />
+            <Button Grid.Column="2" Content="Limpar" Command="{Binding ClearCommand}" />
+        </Grid>
+        <TextBlock Grid.Row="1" Text="Conteúdos adicionados nesta sessão (a lista zera ao fechar o app)."
+                   FontSize="12" Opacity="0.6" Margin="0,4,0,10" />
+
+        <ScrollViewer Grid.Row="2">
+            <ItemsControl ItemsSource="{Binding Log.Entries}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="card" Padding="10,8" Margin="2,3">
+                            <TextBlock Text="{Binding}" FontSize="13" TextWrapping="Wrap" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

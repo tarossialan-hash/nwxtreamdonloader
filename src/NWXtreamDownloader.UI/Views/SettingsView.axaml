@@ -1,0 +1,67 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             x:Class="NWXtreamDownloader.UI.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <ScrollViewer>
+        <StackPanel MaxWidth="480" Margin="20" Spacing="12" HorizontalAlignment="Left">
+            <TextBlock Text="Configurações" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,6" />
+
+            <TextBlock Text="Pasta padrão de download" FontWeight="SemiBold" FontSize="13" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Text="{Binding DownloadFolder}" Watermark="C:\Users\...\Downloads" />
+                <Button Grid.Column="1" Content="Procurar..." Margin="6,0,0,0" Click="OnPickFolder" />
+            </Grid>
+            <TextBlock Text="As pastas Filmes e Séries\Nome\Temporada NN são criadas automaticamente dentro dela."
+                       FontSize="11" Opacity="0.6" />
+
+            <TextBlock Text="Downloads simultâneos (1 a 10)" FontWeight="SemiBold" FontSize="13" />
+            <TextBox Text="{Binding MaxConcurrentText}" Width="120" HorizontalAlignment="Left" />
+
+            <TextBlock Text="Conexões por download (1 a 8) — acelera dividindo o arquivo em partes" FontWeight="SemiBold" FontSize="13" />
+            <TextBox Text="{Binding SegmentsText}" Width="120" HorizontalAlignment="Left" />
+
+            <TextBlock Text="Limite de velocidade por download (KB/s, 0 = ilimitado)" FontWeight="SemiBold" FontSize="13" />
+            <TextBox Text="{Binding SpeedLimitText}" Width="120" HorizontalAlignment="Left" />
+
+            <TextBlock Text="User-Agent" FontWeight="SemiBold" FontSize="13" />
+            <TextBox Text="{Binding UserAgent}" />
+            <TextBlock Text="Alguns painéis exigem um User-Agent de navegador para não bloquear o acesso. Deixe em branco para usar o padrão (Chrome)."
+                       FontSize="11" Opacity="0.6" TextWrapping="Wrap" />
+
+            <TextBlock Text="Idioma" FontWeight="SemiBold" FontSize="13" />
+            <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding Language}" Width="180" />
+
+            <ToggleSwitch IsChecked="{Binding IsDarkTheme}" OnContent="Tema escuro" OffContent="Tema claro" />
+            <CheckBox IsChecked="{Binding SaveCredentials}" Content="Salvar credenciais (criptografadas)" />
+            <CheckBox IsChecked="{Binding OverwriteExisting}" Content="Substituir arquivos já existentes" />
+
+            <TextBlock Text="Pasta de temporada ({n} = número, {nn} = com zero)" FontWeight="SemiBold" FontSize="13" />
+            <TextBox Text="{Binding SeasonPattern}" Width="180" HorizontalAlignment="Left" />
+            <TextBlock Text='Ex.: "temp {n}" gera Séries\Nome\temp 1\S01E01.mkv — igual ao padrão do seu servidor FTP.'
+                       FontSize="11" Opacity="0.6" TextWrapping="Wrap" />
+
+            <Separator Margin="0,8" />
+
+            <TextBlock Text="{Binding StatusMessage}" Foreground="LightGreen"
+                       IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <Button Content="Salvar" Classes="accent" Padding="24,8" Command="{Binding SaveCommand}" />
+
+            <Separator Margin="0,8" />
+            <TextBlock Text="Segurança" FontSize="15" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding LastPasswordChange}" FontSize="12" Opacity="0.7" />
+            <TextBox Text="{Binding CurrentPassword}" Watermark="Senha atual" PasswordChar="●" />
+            <Grid ColumnDefinitions="*,*">
+                <TextBox Text="{Binding NewPassword}" Watermark="Nova senha" PasswordChar="●" Margin="0,0,8,0" />
+                <TextBox Grid.Column="1" Text="{Binding ConfirmPassword}" Watermark="Confirmar nova senha" PasswordChar="●" />
+            </Grid>
+            <TextBlock Text="{Binding SecurityStatus}" FontSize="12" TextWrapping="Wrap"
+                       IsVisible="{Binding SecurityStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            <Button Content="Alterar senha" Padding="18,6" Command="{Binding ChangePasswordCommand}" />
+            <TextBlock Text="A senha é guardada como hash PBKDF2 (nunca em texto puro)."
+                       FontSize="11" Opacity="0.6" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

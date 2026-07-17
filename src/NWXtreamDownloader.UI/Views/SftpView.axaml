@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             x:Class="NWXtreamDownloader.UI.Views.SftpView"
+             x:DataType="vm:SftpViewModel">
+
+    <ScrollViewer>
+        <StackPanel MaxWidth="480" Margin="20" Spacing="12" HorizontalAlignment="Left">
+            <TextBlock Text="Servidor FTP / SFTP" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Text="Configure a conexão com o servidor. A pasta de destino é escolhida no popup a cada download."
+                       FontSize="12" Opacity="0.7" TextWrapping="Wrap" />
+
+            <ToggleSwitch IsChecked="{Binding SftpEnabled}" OnContent="Enviar ao servidor após baixar" OffContent="Envio desativado" />
+
+            <Grid ColumnDefinitions="*,110">
+                <TextBox Text="{Binding SftpHost}" Watermark="Host (ex.: 67.159.41.91)" Margin="0,0,8,0" />
+                <TextBox Grid.Column="1" Text="{Binding SftpPortText}" Watermark="Porta" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*">
+                <TextBox Text="{Binding SftpUser}" Watermark="Usuário (ex.: root)" Margin="0,0,8,0" />
+                <TextBox Grid.Column="1" Text="{Binding SftpPassword}" Watermark="Senha" PasswordChar="●" />
+            </Grid>
+
+            <TextBlock Text="Envios simultâneos (1 a 4)" FontWeight="SemiBold" FontSize="13" />
+            <TextBox Text="{Binding UploadConcurrencyText}" Width="120" HorizontalAlignment="Left" />
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Conectar" Classes="accent" Padding="18,6" Command="{Binding TestSftpCommand}" />
+                <Button Content="Atualizar pastas" Padding="18,6" Command="{Binding RefreshFoldersCommand}"
+                        ToolTip.Tip="Recarrega as pastas do servidor (use após criar pastas pelo FileZilla)" />
+                <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <Ellipse Width="10" Height="10" Fill="#4CD964" IsVisible="{Binding IsConnected}" />
+                    <Ellipse Width="10" Height="10" Fill="#FF3B30" IsVisible="{Binding !IsConnected}" />
+                    <TextBlock Text="Conectado" FontSize="12" Opacity="0.8" IsVisible="{Binding IsConnected}" />
+                    <TextBlock Text="Desconectado" FontSize="12" Opacity="0.8" IsVisible="{Binding !IsConnected}" />
+                </StackPanel>
+            </StackPanel>
+
+            <TextBlock Text="{Binding SftpStatus}" FontSize="12" TextWrapping="Wrap"
+                       IsVisible="{Binding SftpStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <Separator Margin="0,8" />
+            <Button Content="Salvar" Classes="accent" Padding="24,8" Command="{Binding SaveCommand}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

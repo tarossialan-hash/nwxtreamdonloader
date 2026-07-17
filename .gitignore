@@ -1,0 +1,18 @@
+## .NET
+bin/
+obj/
+*.user
+
+## Rider / VS
+.vs/
+.idea/
+*.suo
+
+## App runtime data (created at run time, not part of source)
+/Downloads/
+*.log
+
+## App
+publish/
+error.log
+.claude/

@@ -1,0 +1,128 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             xmlns:m="using:NWXtreamDownloader.Models"
+             x:Class="NWXtreamDownloader.UI.Views.SeriesView"
+             x:DataType="vm:SeriesViewModel">
+
+    <Panel>
+
+    <!-- Seletor de lista: aparece antes do conteúdo -->
+    <StackPanel IsVisible="{Binding ShowListPicker}" MaxWidth="440"
+                VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12">
+        <TextBlock Text="Escolha a lista de séries" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding StatusMessage}" FontSize="12" Opacity="0.75" TextWrapping="Wrap" HorizontalAlignment="Center"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        <ListBox ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding SyncInfo}" FontSize="11" Opacity="0.6" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Content="Adicionar lista" Classes="accent" Padding="20,8"
+                HorizontalAlignment="Center" Command="{Binding AddListCommand}" />
+    </StackPanel>
+
+    <Grid ColumnDefinitions="220,*,340" Margin="16,14" IsVisible="{Binding !ShowListPicker}">
+
+        <!-- Categorias -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*">
+            <TextBlock Text="Categorias" FontWeight="SemiBold" Margin="4,0,0,8" />
+            <ListBox Grid.Row="1" ItemsSource="{Binding Categories}"
+                     SelectedItem="{Binding SelectedCategory}" />
+        </Grid>
+
+        <!-- Lista de séries -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,*" Margin="10,0">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,0,0,12">
+                <Border Background="#3A3560" CornerRadius="6" Padding="10,6" Margin="0,0,8,0"
+                        VerticalAlignment="Center" ToolTip.Tip="Lista aberta">
+                    <TextBlock Text="{Binding SelectedPlaylist.Name, FallbackValue='—'}"
+                               FontSize="12" FontWeight="SemiBold" Foreground="#C3BCF9" />
+                </Border>
+                <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="Pesquisar séries..." Margin="0,0,6,0" />
+                <Button Grid.Column="2" Content="Sincronizar" ToolTip.Tip="Recarrega esta lista do servidor agora"
+                        Command="{Binding SyncCommand}" Margin="0,0,6,0" />
+                <Button Grid.Column="3" Content="Trocar lista" Command="{Binding ChangeListCommand}" />
+            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding StatusMessage}" Foreground="Orange"
+                       IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Margin="4,0,0,6" TextWrapping="Wrap" />
+            <ProgressBar Grid.Row="2" IsIndeterminate="True" IsVisible="{Binding IsLoading}" Height="4" Margin="0,0,0,4" />
+            <ListBox x:Name="SeriesListBox" Grid.Row="3" ItemsSource="{Binding SeriesList}"
+                     SelectedItem="{Binding SelectedSeries}" SelectionMode="Multiple">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Baixar Selecionadas" Command="{Binding DownloadSelectedCommand}" CommandParameter="{Binding #SeriesListBox.SelectedItems}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE896;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="m:Series">
+                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- Temporadas e episódios -->
+        <Border Grid.Column="2" Classes="card" Padding="12">
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
+                <TextBlock Text="{Binding SelectedSeries.Name, FallbackValue='Selecione uma série'}"
+                           FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <Button Grid.Row="1" Classes="accent"
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Margin="0,10,0,6" Command="{Binding DownloadSeriesCommand}"
+                        IsVisible="{Binding SelectedSeries, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <TextBlock Text="&#xE896;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="Baixar série completa" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <ProgressBar Grid.Row="2" IsIndeterminate="True" IsVisible="{Binding IsLoadingEpisodes}" Height="4" />
+
+                <ScrollViewer Grid.Row="3" Margin="0,6,0,0">
+                    <ItemsControl ItemsSource="{Binding Seasons}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:SeasonGroup">
+                                <StackPanel Margin="0,6,0,2">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <Button Grid.Column="1" ToolTip.Tip="Baixar temporada inteira"
+                                                Click="OnDownloadSeason">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <TextBlock Text="&#xE896;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Temporada" FontSize="11" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                    <ItemsControl ItemsSource="{Binding Episodes}" Margin="10,4,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="m:Episode">
+                                                <Grid ColumnDefinitions="*,Auto" Margin="0,1">
+                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12"
+                                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                    <Button Grid.Column="1" Padding="8,4" ToolTip.Tip="Baixar episódio" Click="OnDownloadEpisode">
+                                                        <TextBlock Text="&#xE896;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" FontSize="12" />
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+    </Panel>
+</UserControl>

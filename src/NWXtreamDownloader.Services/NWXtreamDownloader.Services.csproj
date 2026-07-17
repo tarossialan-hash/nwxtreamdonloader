@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\NWXtreamDownloader.Models\NWXtreamDownloader.Models.csproj" />
+    <ProjectReference Include="..\NWXtreamDownloader.Helpers\NWXtreamDownloader.Helpers.csproj" />
+    <ProjectReference Include="..\NWXtreamDownloader.Api\NWXtreamDownloader.Api.csproj" />
+    <ProjectReference Include="..\NWXtreamDownloader.Database\NWXtreamDownloader.Database.csproj" />
+    <ProjectReference Include="..\NWXtreamDownloader.DownloadManager\NWXtreamDownloader.DownloadManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2025.1.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

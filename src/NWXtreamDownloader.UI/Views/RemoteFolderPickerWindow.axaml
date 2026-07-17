@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="NWXtreamDownloader.UI.Views.RemoteFolderPickerWindow"
+        Title="Enviar para qual pasta do servidor?"
+        Width="640" Height="540" MinWidth="560" MinHeight="460"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto" Margin="18">
+        <TextBlock Text="Escolha a pasta de destino no servidor FTP" FontSize="16" FontWeight="SemiBold" />
+        <TextBox Grid.Row="1" x:Name="PathBox" IsReadOnly="True" Margin="0,10,0,6" />
+        <TextBlock Grid.Row="2" x:Name="StatusText" FontSize="12" Opacity="0.75" Margin="2,0,0,6" TextWrapping="Wrap" />
+
+        <ListBox Grid.Row="3" x:Name="FolderList" SelectionChanged="OnFolderSelected"
+                 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="8" />
+
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto" Margin="0,10,0,0">
+            <TextBox x:Name="NewFolderBox" Watermark="Nome da nova pasta" Margin="0,0,8,0" />
+            <Button Grid.Column="1" Content="Criar pasta" Click="OnCreateFolder" Margin="0,0,8,0" />
+            <Button Grid.Column="2" Content="Atualizar" Click="OnRefresh"
+                    ToolTip.Tip="Recarrega esta pasta direto do servidor" />
+        </Grid>
+
+        <TextBlock Grid.Row="5" Text='A estrutura "NomeDaSérie\temp N" é criada automaticamente dentro da pasta escolhida.'
+                   FontSize="11" Opacity="0.6" TextWrapping="Wrap" Margin="2,10,0,0" />
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Usar esta pasta" Classes="accent" Padding="18,8" Click="OnUse" />
+            <Button Content="Cancelar" Padding="18,8" Click="OnCancel" />
+        </StackPanel>
+    </Grid>
+</Window>

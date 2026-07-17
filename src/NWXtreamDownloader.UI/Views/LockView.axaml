@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             x:Class="NWXtreamDownloader.UI.Views.LockView"
+             x:DataType="vm:LockViewModel">
+
+    <Border Classes="card" MaxWidth="380" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="32">
+        <StackPanel Spacing="14">
+            <Border Background="#6C5CE7" CornerRadius="14" Width="52" Height="52" HorizontalAlignment="Center">
+                <TextBlock Text="&#xE72E;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol"
+                           FontSize="24" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <TextBlock Text="Acesso protegido" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" />
+
+            <!-- entrada da senha -->
+            <StackPanel Spacing="10" IsVisible="{Binding !MustChange}">
+                <TextBox Text="{Binding Password}" Watermark="Senha" PasswordChar="●" />
+            </StackPanel>
+
+            <!-- troca obrigatória no primeiro acesso -->
+            <StackPanel Spacing="10" IsVisible="{Binding MustChange}">
+                <TextBox Text="{Binding NewPassword}" Watermark="Nova senha (mínimo 6 caracteres)" PasswordChar="●" />
+                <TextBox Text="{Binding ConfirmPassword}" Watermark="Confirmar nova senha" PasswordChar="●" />
+            </StackPanel>
+
+            <TextBlock Text="{Binding Message}" Foreground="Orange" TextWrapping="Wrap"
+                       IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <Button Content="Entrar" Classes="accent" Height="38" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" IsDefault="True" Command="{Binding EnterCommand}" />
+        </StackPanel>
+    </Border>
+</UserControl>

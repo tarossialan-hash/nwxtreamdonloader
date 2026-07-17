@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             xmlns:il="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             x:Class="NWXtreamDownloader.UI.Views.MoviesView"
+             x:DataType="vm:MoviesViewModel">
+
+    <Panel>
+
+    <!-- Seletor de lista: aparece antes do conteúdo -->
+    <StackPanel IsVisible="{Binding ShowListPicker}" MaxWidth="440"
+                VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12">
+        <TextBlock Text="Escolha a lista de filmes" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding StatusMessage}" FontSize="12" Opacity="0.75" TextWrapping="Wrap" HorizontalAlignment="Center"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        <ListBox ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding SyncInfo}" FontSize="11" Opacity="0.6" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Content="Adicionar lista" Classes="accent" Padding="20,8"
+                HorizontalAlignment="Center" Command="{Binding AddListCommand}" />
+    </StackPanel>
+
+    <Grid ColumnDefinitions="220,*,300" Margin="16,14" IsVisible="{Binding !ShowListPicker}">
+
+        <!-- Categorias -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*">
+            <TextBlock Text="Categorias" FontWeight="SemiBold" Margin="4,0,0,8" />
+            <ListBox Grid.Row="1" ItemsSource="{Binding Categories}"
+                     SelectedItem="{Binding SelectedCategory}" />
+        </Grid>
+
+        <!-- Lista de filmes -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,*" Margin="10,0">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,0,0,12">
+                <Border Background="#3A3560" CornerRadius="6" Padding="10,6" Margin="0,0,8,0"
+                        VerticalAlignment="Center" ToolTip.Tip="Lista aberta">
+                    <TextBlock Text="{Binding SelectedPlaylist.Name, FallbackValue='—'}"
+                               FontSize="12" FontWeight="SemiBold" Foreground="#C3BCF9" />
+                </Border>
+                <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="Pesquisar filmes..." Margin="0,0,6,0" />
+                <Button Grid.Column="2" Content="Sincronizar" ToolTip.Tip="Recarrega esta lista do servidor agora"
+                        Command="{Binding SyncCommand}" Margin="0,0,6,0" />
+                <Button Grid.Column="3" Content="Trocar lista" Command="{Binding ChangeListCommand}" />
+            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding StatusMessage}" Foreground="Orange"
+                       IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Margin="4,0,0,6" TextWrapping="Wrap" />
+            <ProgressBar Grid.Row="2" IsIndeterminate="True" IsVisible="{Binding IsLoading}" Height="4" Margin="0,0,0,4" />
+            <ListBox x:Name="MoviesList" Grid.Row="3" ItemsSource="{Binding Movies}"
+                     SelectedItem="{Binding SelectedMovie}" SelectionMode="Multiple">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Baixar Selecionados" Command="{Binding DownloadSelectedCommand}" CommandParameter="{Binding #MoviesList.SelectedItems}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE896;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- Detalhes -->
+        <Border Grid.Column="2" Classes="card" Padding="14">
+            <Panel>
+            <StackPanel Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center"
+                        IsVisible="{Binding Details, Converter={x:Static ObjectConverters.IsNull}}">
+                <TextBlock Text="&#xE8B2;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol"
+                           FontSize="34" Opacity="0.3" HorizontalAlignment="Center" />
+                <TextBlock Text="Selecione um filme para ver os detalhes" Opacity="0.45"
+                           FontSize="13" TextWrapping="Wrap" TextAlignment="Center" />
+            </StackPanel>
+            <ScrollViewer>
+                <StackPanel Spacing="10" IsVisible="{Binding Details, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <Image il:ImageLoader.Source="{Binding Details.CoverUrl}"
+                           MaxHeight="260" Stretch="Uniform" />
+                    <TextBlock Text="{Binding Details.Name}" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBlock Text="{Binding Details.Year}" Opacity="0.7" />
+                        <TextBlock Text="{Binding Details.Duration}" Opacity="0.7" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding Details.Genre}" Opacity="0.7" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Details.Plot}" TextWrapping="Wrap" FontSize="13" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="Tamanho:" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding FileSizeText}" />
+                    </StackPanel>
+
+                    <Button Classes="accent" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" Height="38"
+                            Command="{Binding DownloadCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="Baixar" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+            </Panel>
+        </Border>
+    </Grid>
+    </Panel>
+</UserControl>

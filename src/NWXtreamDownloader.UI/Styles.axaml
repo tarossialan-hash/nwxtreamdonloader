@@ -1,0 +1,107 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Global Background Elements -->
+    <Style Selector="Window">
+        <Setter Property="Background" Value="#1E1E1E" />
+        <Setter Property="Foreground" Value="#F3F3F3" />
+        <Setter Property="FontFamily" Value="Segoe UI, Inter, Arial" />
+    </Style>
+
+    <!-- Controles com cantos levemente arredondados (padrão comercial) -->
+    <Style Selector="Button">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button:pointerover">
+        <Setter Property="Opacity" Value="0.85" />
+    </Style>
+
+    <!-- Campos de Texto -->
+    <Style Selector="TextBox">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Background" Value="#2D2D30" />
+        <Setter Property="BorderBrush" Value="#3F3F46" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Foreground" Value="#F3F3F3" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="#2563EB" />
+        <Setter Property="Background" Value="#333337" />
+    </Style>
+
+    <!-- Progress Bar -->
+    <Style Selector="ProgressBar">
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Height" Value="4" />
+        <Setter Property="Background" Value="#3F3F46" />
+        <Setter Property="Foreground" Value="#2563EB" />
+    </Style>
+    
+    <!-- ListBox Geral -->
+    <Style Selector="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="ListBoxItem">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Margin" Value="0,1" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.1" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- Cartões Comerciais -->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="#252526" />
+        <Setter Property="BorderBrush" Value="#333337" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="BoxShadow" Value="0 2 8 0 #1A000000" />
+    </Style>
+
+    <!-- Títulos -->
+    <Style Selector="TextBlock.h1">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="TextBlock.h2">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="#E0E0E0" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+        <Setter Property="Opacity" Value="0.65" />
+        <Setter Property="Foreground" Value="#A0A0A0" />
+    </Style>
+
+    <!-- Menu lateral profissional (Nav) -->
+    <Style Selector="ListBox.nav ListBoxItem">
+        <Setter Property="Padding" Value="12,10" />
+        <Setter Property="Margin" Value="8,2" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#2D2D30" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#2563EB" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected TextBlock">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+</Styles>

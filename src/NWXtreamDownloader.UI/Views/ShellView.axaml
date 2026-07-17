@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             xmlns:views="using:NWXtreamDownloader.UI.Views"
+             x:Class="NWXtreamDownloader.UI.Views.ShellView"
+             x:DataType="vm:ShellViewModel">
+
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="vm:MoviesViewModel">
+            <views:MoviesView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SeriesViewModel">
+            <views:SeriesView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:DownloadsViewModel">
+            <views:DownloadsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:HistoryViewModel">
+            <views:HistoryView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SettingsViewModel">
+            <views:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SftpViewModel">
+            <views:SftpView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PlaylistsViewModel">
+            <views:PlaylistsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SearchViewModel">
+            <views:SearchView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:NewContentViewModel">
+            <views:NewContentView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Panel>
+    <Grid ColumnDefinitions="210,*" IsVisible="{Binding !IsLocked}">
+
+        <!-- Menu lateral profissional -->
+        <Border Grid.Column="0" Background="#252526" BorderBrush="#333337" BorderThickness="0,0,1,0">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10" Margin="18,22,18,18">
+                    <Border Background="Transparent" CornerRadius="8" Width="44" Height="44">
+                        <Image Source="avares://NWXtreamDownloader/Assets/icon.png" Stretch="Uniform" />
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="NW Xtream" FontSize="17" FontWeight="Bold" Foreground="#F1F1F6" />
+                        <TextBlock Text="Downloader" FontSize="11" Foreground="#8A8A99" Margin="0,-2,0,0" />
+                    </StackPanel>
+                </StackPanel>
+
+                <ListBox Grid.Row="1" Classes="nav"
+                         ItemsSource="{Binding NavItems}"
+                         SelectedItem="{Binding SelectedNavItem}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="vm:NavItem">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <TextBlock Text="{Binding Icon}" FontSize="16" Foreground="{Binding IconColor}"
+                                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Title}" FontSize="14" Foreground="#E4E4EC"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Grid.Row="2" Text="v1.0" FontSize="11" Foreground="#55555F"
+                           Margin="20,0,0,14" />
+            </Grid>
+        </Border>
+
+        <!-- Conteúdo (as listas M3U são gerenciadas na aba Listas) -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentSection}" />
+    </Grid>
+
+    <!-- Tela de bloqueio: cobre o app inteiro até a senha ser validada -->
+    <Border Background="#17171E" IsVisible="{Binding IsLocked}">
+        <views:LockView DataContext="{Binding Lock}" />
+    </Border>
+    </Panel>
+</UserControl>

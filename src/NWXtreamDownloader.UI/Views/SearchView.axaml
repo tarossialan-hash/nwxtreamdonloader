@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             x:Class="NWXtreamDownloader.UI.Views.SearchView"
+             x:DataType="vm:SearchViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="14">
+        <TextBlock Text="Busca global" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+            <TextBox Text="{Binding Query}" Watermark="Buscar em todas as listas, filmes e séries..." Margin="0,0,8,0" />
+            <Button Grid.Column="1" Content="Buscar" Classes="accent" IsDefault="True"
+                    Command="{Binding SearchCommand}" />
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="0,8">
+            <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsSearching}" Width="120" Height="4" />
+            <TextBlock Text="{Binding StatusMessage}" FontSize="12" Opacity="0.8" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="3">
+            <ItemsControl ItemsSource="{Binding Results}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:SearchResult">
+                        <Border Classes="card" Padding="10" Margin="2,3">
+                            <Grid ColumnDefinitions="70,*,Auto,Auto,Auto">
+                                <Border Background="#3A3560" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding Type}" FontSize="11" Foreground="#C3BCF9" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold"
+                                           VerticalAlignment="Center" Margin="8,0" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Grid.Column="2" Text="{Binding Category}" FontSize="12" Opacity="0.7"
+                                           VerticalAlignment="Center" Margin="0,0,14,0" />
+                                <TextBlock Grid.Column="3" Text="{Binding ListName}" FontSize="12" Foreground="#8B7FF0"
+                                           VerticalAlignment="Center" Margin="0,0,12,0" />
+                                <Button Grid.Column="4" Content="Baixar" FontSize="12" Classes="accent"
+                                        Click="OnDownload" ToolTip.Tip="Baixa e pergunta a pasta do FTP (série completa quando for série)" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

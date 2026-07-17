@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             xmlns:m="using:NWXtreamDownloader.Models"
+             x:Class="NWXtreamDownloader.UI.Views.PlaylistsView"
+             x:DataType="vm:PlaylistsViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="14">
+        <TextBlock Text="Listas M3U" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+
+        <!-- adicionar / editar -->
+        <Grid Grid.Row="1" ColumnDefinitions="200,*,Auto,Auto">
+            <TextBox Text="{Binding EditName}" Watermark="Nome (ex.: Disney)" Margin="0,0,8,0" />
+            <TextBox Grid.Column="1" Text="{Binding EditUrl}" Watermark="URL M3U (http://host/get.php?username=...&amp;password=...)" Margin="0,0,8,0" />
+            <Button Grid.Column="2" Content="Salvar" Classes="accent" Command="{Binding SaveCommand}" Margin="0,0,8,0" />
+            <Button Grid.Column="3" Content="Cancelar" Command="{Binding CancelEditCommand}" />
+        </Grid>
+
+        <TextBlock Grid.Row="2" Text="{Binding StatusMessage}" FontSize="12" Opacity="0.85" Margin="2,8"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+        <ScrollViewer Grid.Row="3">
+            <ItemsControl ItemsSource="{Binding Lists}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="m:Playlist">
+                        <Border Classes="card" Padding="12" Margin="2,4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="4">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Ellipse Width="9" Height="9" Fill="#4CD964" VerticalAlignment="Center"
+                                                 IsVisible="{Binding Active}" />
+                                        <Ellipse Width="9" Height="9" Fill="#8A8A99" VerticalAlignment="Center"
+                                                 IsVisible="{Binding !Active}" />
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding UrlSummary}" FontSize="11" Opacity="0.55" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding SyncInfo}" FontSize="12" Opacity="0.8" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                                    <Button Content="Sincronizar" FontSize="12" Classes="accent" Click="OnSync"
+                                            ToolTip.Tip="Recarrega filmes, séries e o vencimento desta lista" />
+                                    <Button Content="Ativar/Desativar" FontSize="12" Click="OnToggle" />
+                                    <Button Content="Editar" FontSize="12" Click="OnEdit" />
+                                    <Button Content="Remover" FontSize="12" Click="OnDelete" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

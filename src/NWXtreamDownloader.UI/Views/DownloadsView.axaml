@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NWXtreamDownloader.ViewModels"
+             xmlns:dm="using:NWXtreamDownloader.DownloadManager"
+             x:Class="NWXtreamDownloader.UI.Views.DownloadsView"
+             x:DataType="vm:DownloadsViewModel">
+
+    <Grid RowDefinitions="Auto,*" Margin="14">
+        <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+            <TextBlock Text="Downloads" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                <Button Classes="accent" Command="{Binding StartAllCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#xE768;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center"/>
+                        <TextBlock Text="Iniciar todos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding PauseAllCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#xE769;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center"/>
+                        <TextBlock Text="Pausar todos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding CancelAllCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#xE711;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center"/>
+                        <TextBlock Text="Cancelar todos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ClearAllCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center"/>
+                        <TextBlock Text="Limpar tudo" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding UploadCompletedCommand}" ToolTip.Tip="Envia ao servidor todos os concluídos que ainda não subiram">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#xE898;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" VerticalAlignment="Center"/>
+                        <TextBlock Text="Enviar concluídos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding GroupedItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DownloadGroup">
+                        <Expander IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Margin="0,0,0,10" HorizontalAlignment="Stretch">
+                            <Expander.Header>
+                                <Grid ColumnDefinitions="*,Auto" Margin="0,0,10,0" HorizontalAlignment="Stretch">
+                                    <TextBlock Text="{Binding Category}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <TextBlock Text="Total:" Opacity="0.7" />
+                                            <TextBlock Text="{Binding Total}" FontWeight="SemiBold" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <TextBlock Text="Baixados:" Opacity="0.7" />
+                                            <TextBlock Text="{Binding Completed}" FontWeight="SemiBold" Foreground="LightGreen" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <TextBlock Text="Enviados FTP:" Opacity="0.7" />
+                                            <TextBlock Text="{Binding Uploaded}" FontWeight="SemiBold" Foreground="#8B7FF0" />
+                                        </StackPanel>
+                                        <StackPanel x:CompileBindings="False" Orientation="Horizontal" Spacing="4" Margin="10,0,0,0">
+                                            <Button ToolTip.Tip="Iniciar Grupo" Command="{Binding $parent[UserControl].DataContext.StartGroupCommand}" CommandParameter="{Binding}" Padding="8,4">
+                                                <TextBlock Text="&#xE768;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                            </Button>
+                                            <Button ToolTip.Tip="Pausar Grupo" Command="{Binding $parent[UserControl].DataContext.PauseGroupCommand}" CommandParameter="{Binding}" Padding="8,4">
+                                                <TextBlock Text="&#xE769;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                            </Button>
+                                            <Button ToolTip.Tip="Cancelar Grupo" Command="{Binding $parent[UserControl].DataContext.CancelGroupCommand}" CommandParameter="{Binding}" Padding="8,4">
+                                                <TextBlock Text="&#xE711;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                            </Button>
+                                            <Button ToolTip.Tip="Excluir Grupo da lista" Command="{Binding $parent[UserControl].DataContext.RemoveGroupCommand}" CommandParameter="{Binding}" Padding="8,4">
+                                                <TextBlock Text="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander.Header>
+                            
+                            <ItemsControl ItemsSource="{Binding Items}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="dm:DownloadItem">
+                                        <Border Classes="card" Padding="14" Margin="2,4">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold"
+                                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                    <ProgressBar Value="{Binding Progress}" Maximum="100" Height="8" />
+                                                    <StackPanel Orientation="Horizontal" Spacing="16">
+                                                        <TextBlock Text="{Binding StatusText}" FontSize="12" Opacity="0.8" />
+                                                        <TextBlock Text="{Binding SizeText}" FontSize="12" Opacity="0.8" />
+                                                        <TextBlock Text="{Binding SpeedText}" FontSize="12" Opacity="0.8" />
+                                                        <TextBlock Text="{Binding EtaText}" FontSize="12" Opacity="0.8" />
+                                                        <TextBlock Text="{Binding UploadText}" FontSize="12" Foreground="#8B7FF0" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4"
+                                                            VerticalAlignment="Center" Margin="10,0,0,0">
+                                                    <Button ToolTip.Tip="Pausar" Click="OnPause" Padding="8,4">
+                                                        <TextBlock Text="&#xE769;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                                    </Button>
+                                                    <Button ToolTip.Tip="Continuar" Click="OnResume" Padding="8,4">
+                                                        <TextBlock Text="&#xE768;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                                    </Button>
+                                                    <Button ToolTip.Tip="Cancelar" Click="OnCancel" Padding="8,4">
+                                                        <TextBlock Text="&#xE711;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                                    </Button>
+                                                    <Button ToolTip.Tip="Remover da fila" Click="OnRemove" Padding="8,4">
+                                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                                    </Button>
+                                                    <Button ToolTip.Tip="Reenviar ao servidor (SFTP)" Click="OnForceUpload" Padding="8,4" IsVisible="{Binding IsCompleted}">
+                                                        <TextBlock Text="&#xE898;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets, Symbol" />
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
