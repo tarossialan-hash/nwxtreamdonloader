@@ -13,6 +13,8 @@ obj/
 *.log
 
 ## App
-publish/
+
 error.log
 .claude/
+publish/*.zip
+publish/*.pdb
